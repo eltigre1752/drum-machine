@@ -1,44 +1,41 @@
-import './App.scss';
+import './styles/App.scss';
 import React from 'react';
 import DrumPad from './DrumPad';
 
 class PadBank extends React.Component {
-    constructor(props){
-      super(props);
-    }
-  
     render() {
       let padBank;
-      if(this.props.power){
-        padBank = this.props.currentPadBank.map((drumObj, i, padBankArr) => {
+      const { power, currentPadBank, updateDisplay } = this.props;
+      if(power) {
+        padBank = currentPadBank.map((drumObj) => {
             return (
               <DrumPad 
-                clip = {drumObj.url}
-                clipId = {drumObj.id}
+                url = {drumObj.url}
+                drumPadId = {drumObj.id}
                 keyTrigger = {drumObj.keyTrigger}
                 keyCode = {drumObj.keyCode}
-                power={this.props.power}
-                updateDisplay = {this.props.updateDisplay}
+                power={power}
+                updateDisplay = {updateDisplay}
+              />
+            )
+          }
+        )
+      } else {
+        padBank = currentPadBank.map((drumObj) => {
+            return (
+              <DrumPad 
+                url = "#"
+                drumPadId = {drumObj.id}
+                keyTrigger = {drumObj.keyTrigger}
+                keyCode = {drumObj.keyCode}
+                power={power}
+                updateDisplay = {updateDisplay}
               />
             )
           }
         )
       }
-      else {
-        padBank = this.props.currentPadBank.map((drumObj) => {
-            return (
-              <DrumPad 
-                clip = "#"
-                clipId = {drumObj.id}
-                keyTrigger = {drumObj.keyTrigger}
-                keyCode = {drumObj.keyCode}
-                power={this.props.power}
-                updateDisplay = {this.props.updateDisplay}
-              />
-            )
-          }
-        )
-      }
+
       return(
        <div className = "pad-bank">
          {padBank}

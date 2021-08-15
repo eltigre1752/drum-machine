@@ -1,15 +1,19 @@
-import './App.scss';
+import './styles/App.scss';
 import React from 'react';
 
 const activeStyle = {
-    backgroundColor: 'orange',
-    boxShadow: '0 3px orange',
-  
+  backgroundColor: 'orange',
+  boxShadow: '3px 3px 5px orange'
 };
 const inactiveStyle = {
-    backgroundColor: 'grey',
-    boxShadow: '3px 3px 5px black'
+  backgroundColor: 'grey',
+  boxShadow: '3px 3px 5px black'
 };
+
+const powerOffActiveStyle = {
+  backgroundColor: '#979797',
+  boxShadow: '0 3px grey'
+}
 
   class DrumPad extends React.Component {
     constructor(props) {
@@ -23,23 +27,23 @@ const inactiveStyle = {
       this.activatePad = this.activatePad.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
       document.addEventListener("keydown", this.handleKeyPress)
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
       document.removeEventListener("keydown", this.handleKeyPress)
     }
 
-    handleKeyPress(e){
-      if(e.keyCode === this.props.keyCode) {
+    handleKeyPress({ keyCode }) {
+      if(keyCode === this.props.keyCode) {
         this.playSound();
       }
     }
   
     activatePad() {
       if(this.props.power){
-        if(this.state.padStyle.backgroundColor === 'orange') {
+        if(this.state.padStyle === activeStyle) {
           this.setState({
             padStyle: inactiveStyle
           });
@@ -48,16 +52,13 @@ const inactiveStyle = {
             padStyle: activeStyle
           });
         }
-      } else if(this.state.padStyle.boxShadow === '0 3px grey') {
+      } else if(this.state.padStyle === powerOffActiveStyle) {
         this.setState({
           padStyle: inactiveStyle
         });
       } else {
         this.setState({
-          padStyle: {
-            backgroundColor: '#979797',
-            boxShadow: '0 3px grey'
-          }
+          padStyle: powerOffActiveStyle
         });
       }
     }
@@ -68,24 +69,23 @@ const inactiveStyle = {
       sound.play();
       this.activatePad();
       setTimeout(() => this.activatePad(), 100);
-      this.props.updateDisplay(this.props.clipId.replace(/-/g,' '));
+      this.props.updateDisplay(this.props.drumPadId.replace(/-/g,' '));
     }
   
     render() {
-      const {clip, keyTrigger} = this.props;
       return (
         <div 
           className = "drum-pad"
-          id = {this.props.clipId}
+          id = {this.props.drumPadId}
           onClick = {this.playSound}
           style = {this.state.padStyle}
         >
           <audio 
-            className = "clip"
-            id = {keyTrigger}
-            src = {clip}
+            className = "audio"
+            id = {this.props.keyTrigger}
+            src = {this.props.url}
           />
-          {keyTrigger}
+          {this.props.keyTrigger}
         </div>
       )
     }
